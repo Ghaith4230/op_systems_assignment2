@@ -15,7 +15,7 @@ typedef struct header {
             p->next = (void *)((uintptr_t)(p->next) ^ 0x1); \
         } \
     } while (0)
-#define SIZE(p)        (size_t)(0)
+#define SIZE(p)        (size_t)((uintptr_t)GET_NEXT(p) - (uintptr_t)p - sizeof(BlockHeader))
 #define MIN_SIZE     (8)
 
 static BlockHeader *first = NULL;
