@@ -73,12 +73,28 @@ void* simple_malloc(size_t size) {
 }
 
 void simple_free(void *ptr) {
-    BlockHeader *block = NULL; // TODO: Find block corresponding to ptr
+    BlockHeader *block = (BlockHeader*)((uintptr_t)ptr - sizeof(BlockHeader));
+
     if (GET_FREE(block)) {
         return;
+    } else{
+        SET_FREE(block, 1);
     }
 
-    // TODO: Free block
+    BlockHeader *nextBlock = GET_NEXT(block);
 
-    // Possibly coalesce consecutive free blocks here
+    // Forward Coalescing
+    if (nextBlock != NULL && GET_FREE(nextBlock)){
+        block->next = nextBlock->next;
+    }
+
+    // Backward Coalescing
+    BlockHeader *previousBlock = first;
+    while (previousBlock->next != block){
+        previousBlock = GET_NEXT(previousBlock);
+    }
+
+    if (previousBlock != NULL && GET_FREE(previousBlock)){
+        previousBlock->next = block->next;
+    }
 }
