@@ -73,6 +73,8 @@ void* simple_malloc(size_t size) {
 }
 
 void simple_free(void *ptr) {
+    if(!ptr) return;
+
     BlockHeader *block = (BlockHeader*)((uintptr_t)ptr - sizeof(BlockHeader));
 
     if (GET_FREE(block)) {
